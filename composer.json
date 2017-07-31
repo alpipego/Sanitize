@@ -1,6 +1,6 @@
 {
-    "name": "wp-hibou/sanitizer",
-    "description": "Common WordPress sanitzing for German Language",
+    "name": "wp-hibou/sanitize",
+    "description": "Common WordPress sanitzing for the German language",
     "type": "library",
     "license": "MIT",
     "authors": [
