@@ -29,14 +29,14 @@ function permalink(string $string) : string
     return $string;
 }
 
-function numberFormat($number, int $decimalPlaces) : string
+function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', string $thSeperator = '&#8239;') : string
 {
     $dcs  = explode('.', floatval($number));
     $left = $dcs[0];
     if (strlen($left) > 4) {
         $left = str_split(strrev($left), 3);
-        $left = strrev(implode(' ', $left));
+        $left = strrev(implode($thSeperator, $left));
     }
 
-    return $left . ',' . str_pad($dcs[1], $decimalPlaces, '0');
+    return $left . $decPoint . str_pad($dcs[1], $decPlaces, '0');
 }
