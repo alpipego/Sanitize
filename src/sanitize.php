@@ -31,12 +31,40 @@ function permalink(string $string) : string
 
 function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', string $thSeperator = '&#8239;') : string
 {
-    $dcs  = explode('.', floatval($number));
-    $left = $dcs[0];
-    if (strlen($left) > 4) {
-        $left = str_split(strrev($left), 3);
-        $left = strrev(implode($thSeperator, $left));
+    if ($decPoint === ',') {
+        if (mb_strpos($number, ',')) {
+            $number = str_replace('.', '', $number);
+        }
+        $number = str_replace(',', '.', $number);
     }
 
-    return $left . $decPoint . str_pad($dcs[1], $decPlaces, '0');
+    $number = (string)floatval($number);
+    $dcs    = explode('.', $number);
+    if (mb_strlen($dcs[1] ?? '') > $decPlaces) {
+        $round = str_split($dcs[1], $decPlaces);
+        $dcs[1] = (string)((int)mb_substr($round[1], 0, 1) > 4 ? (int)$round[0] + 1 : $round[0]);
+    } else {
+        $dcs[1] = str_pad($dcs[1] ?? '', $decPlaces, '0');
+    }
+    $minus = '';
+    if (mb_strpos($dcs[0], '-') === 0) {
+        $minus  = '-';
+        $dcs[0] = ltrim($dcs[0], '-');
+    }
+    foreach ($dcs as $key => &$group) {
+        if (mb_strlen($group) > 4) {
+            $dummySeperator = '$';
+            $group          = str_split($key ? $group : strrev($group), 3);
+            $group          = implode($dummySeperator, $group);
+            if (! $key) {
+                $group = strrev($group);
+            }
+            $group = str_replace($dummySeperator, $thSeperator, $group);
+        }
+    }
+    if (! isset($dcs[1])) {
+        $dcs[1] = '0';
+    }
+
+    return $minus . $dcs[0] . $decPoint . $dcs[1];
 }
