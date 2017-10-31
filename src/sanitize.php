@@ -5,7 +5,7 @@
  * Date: 31.07.2017
  * Time: 12:29
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace WPHibou\Sanitize;
 
@@ -40,12 +40,22 @@ function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', strin
 
     $number = (string)floatval($number);
     $dcs    = explode('.', $number);
-    if (mb_strlen($dcs[1] ?? '') > $decPlaces) {
-        $round = str_split($dcs[1], $decPlaces);
-        $dcs[1] = (string)((int)mb_substr($round[1], 0, 1) > 4 ? (int)$round[0] + 1 : $round[0]);
-    } else {
-        $dcs[1] = str_pad($dcs[1] ?? '', $decPlaces, '0');
+
+    if ($decPlaces === 0) {
+        $dcs[1] = '';
+    } elseif ($decPlaces > 0) {
+        if (mb_strlen($dcs[1] ?? '') > $decPlaces) {
+            $round  = str_split($dcs[1], $decPlaces);
+            $dcs[1] = (string)((int)mb_substr($round[1], 0, 1) > 4 ? (int)$round[0] + 1 : $round[0]);
+        } else {
+            $dcs[1] = str_pad($dcs[1] ?? '', $decPlaces, '0');
+        }
+    } elseif ($decPlaces < 0) {
+        if (!$dcs[1]) {
+            $dcs[1] = '';
+        }
     }
+
     $minus = '';
     if (mb_strpos($dcs[0], '-') === 0) {
         $minus  = '-';
@@ -62,9 +72,6 @@ function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', strin
             $group = str_replace($dummySeperator, $thSeperator, $group);
         }
     }
-    if (! isset($dcs[1])) {
-        $dcs[1] = '0';
-    }
 
-    return $minus . $dcs[0] . $decPoint . $dcs[1];
+    return $minus . $dcs[0] . ($dcs[1] ? $decPoint . $dcs[1] : '');
 }
