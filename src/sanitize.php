@@ -51,7 +51,7 @@ function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', strin
             $dcs[1] = str_pad($dcs[1] ?? '', $decPlaces, '0');
         }
     } elseif ($decPlaces < 0) {
-        if (!$dcs[1]) {
+        if (!isset($dcs[1])) {
             $dcs[1] = '';
         }
     }
