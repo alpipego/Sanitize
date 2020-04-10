@@ -32,7 +32,7 @@ function permalink(string $string) : string
 function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', string $thSeperator = '&#8239;') : string
 {
     if ($decPoint === ',') {
-        if (mb_strpos($number, ',')) {
+        if (mb_strpos((string)$number, ',')) {
             $number = str_replace('.', '', $number);
         }
         $number = str_replace(',', '.', $number);
@@ -62,7 +62,7 @@ function numberFormat($number, int $decPlaces = 2, string $decPoint = ',', strin
         $dcs[0] = ltrim($dcs[0], '-');
     }
     foreach ($dcs as $key => &$group) {
-        if (mb_strlen($group) > 4) {
+        if (mb_strlen($group) > 3) {
             $dummySeperator = '$';
             $group          = str_split($key ? $group : strrev($group), 3);
             $group          = implode($dummySeperator, $group);
